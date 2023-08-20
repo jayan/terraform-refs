@@ -1,6 +1,6 @@
 provider "aws" {
   region = "us-west-2"
-  #access_key = " " # use locally autheticated AWS CLI's Access Key and Secret Key
+  #access_key = "" # use locally autheticated AWS CLI's Access Key and Secret Key
   #secret_key = ""
 }
 
