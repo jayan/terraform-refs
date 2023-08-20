@@ -1,0 +1,17 @@
+provider "aws" {
+  region = "us-west-2"
+  #access_key = " " # use locally autheticated AWS CLI's Access Key and Secret Key
+  #secret_key = ""
+}
+
+resource "aws_instance" "testServer01" {
+  ami                    = "ami-03f65b8614a860c29"
+  instance_type          = "t2.micro"
+  availability_zone      = "us-west-2a"
+  key_name               = "tf_kp"
+  vpc_security_group_ids = ["sg-02376bcee1179ee24"]
+  tags = {
+    Name = "testServer01"
+    Project = "testProj01"
+  }
+}
