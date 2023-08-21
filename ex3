@@ -1,0 +1,77 @@
+provider "aws" {
+  region = "us-west-2"
+}
+
+//Create Region VPC
+resource "aws_vpc" "custVPC" {
+  cidr_block = "10.0.0.0/16"
+}
+
+//Create subnet
+resource "aws_subnet" "custVPC_SN01" {
+  vpc_id     = aws_vpc.custVPC.id
+  cidr_block = "10.0.1.0/24"
+
+  tags = {
+    Name = "custVPC_SN01"
+  }
+}
+
+//Create IGW
+resource "aws_internet_gateway" "custIGW" {
+  vpc_id = aws_vpc.custVPC.id
+
+  tags = {
+    Name = "custIGW"
+  }
+}
+
+//Create Routing Table
+resource "aws_route_table" "custVPC_PubRT" {
+  vpc_id = aws_vpc.custVPC.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.custIGW.id
+  }
+
+  tags = {
+    Name = "custVPC_PubRT"
+  }
+}
+
+//Associating the subnet to RT
+resource "aws_route_table_association" "custVPC_RT_Pub_Association" {
+  subnet_id      = aws_subnet.custVPC_SN01.id
+  route_table_id = aws_route_table.custVPC_PubRT.id
+}
+
+//Create a new SG
+resource "aws_security_group" "custVPC_SG" {
+  vpc_id = aws_vpc.custVPC.id
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 22
+    to_port     = 22
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+//Create Instance
+resource "aws_instance" "testInst01" {
+  ami           = "ami-0e0f3d4588f992288"
+  instance_type = "t2.micro"
+  key_name      = "tf_kp"
+  // security_groups = ["demo-sg"]
+  vpc_security_group_ids = [aws_security_group.custVPC_SG.id]
+  subnet_id              = aws_subnet.custVPC_SN01.id
+  associate_public_ip_address = true
+}
