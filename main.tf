@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+      aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0.0, < 5.0.0"  # Example constraint for version 4.x
+    }
+  }
+}
 
 module "levelup-vpc" {
     source      = "./module/vpc"
