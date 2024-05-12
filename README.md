@@ -14,9 +14,11 @@ To clone the these
 ```bash
   git clone https://github.com/sriram-R-krishnan/devops-build
 ```
+Docker:
+Dockerize the application by creating a Dockerfile.
+Create a docker-compose file to use the above image.
 
-
-Docker:-
+# dockerrized it 
 install a docker on  machine by using docker.sh file that i uploaded in repo located in installation directory.
 And copy the all the files from the cloned reposity to a directory called devops-Capstone
 
